@@ -14,11 +14,76 @@ app.secret_key = 'mysecretkey'
 
 @app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/notes')
+def notes():
+    cursor = mysql.cursor()
+    cursor.execute("SELECT * FROM notes;")
+    data = cursor.fetchall()
+
+    return render_template('notes.html', notes=data)
+
+@app.route('/add_note', methods=['POST'])
+def add_note():
+
+    if request.method == 'POST':
+
+        title = request.form['title']
+        content = request.form['content']
+        color = request.form['color']
+
+        cursor = mysql.cursor()
+        sql = "INSERT INTO notes (title, content, color) VALUES (%s, %s, %s)"
+        val = (title, content, color)
+        cursor.execute(sql, val)
+        mysql.commit()
+        flash("Note added successfully")
+        return redirect(url_for('notes'))
+
+@app.route('/remove_note/<string:id>')
+def remove_note(id):
+    cursor = mysql.cursor()
+    sql = "DELETE FROM notes WHERE id = {0}".format(id)
+    cursor.execute(sql)
+    mysql.commit()
+    flash("Note removed successfully")
+    return redirect(url_for('notes'))
+
+@app.route('/edit_note/<string:id>')
+def edit_note(id):
+    cursor = mysql.cursor()
+    sql = "SELECT *  FROM notes WHERE id = {0}".format(id)
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    return render_template('edit-note.html', note=data[0])
+
+@app.route('/update_note/<string:id>', methods=['POST'])
+def update_note(id):
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        color = request.form['color']
+
+        cursor = mysql.cursor()
+        sql = """UPDATE notes
+        SET title = %s,
+        content = %s,
+        color = %s
+        WHERE id = {0}""".format(id)
+        val = (title, content, color)
+        cursor.execute(sql, val)
+        mysql.commit()
+        flash("Note updated successfully")
+        return redirect(url_for('notes'))
+
+@app.route('/contacts')
+def contacts():
     cursor = mysql.cursor()
     cursor.execute("SELECT * FROM contacts")
     data = cursor.fetchall()
 
-    return render_template('index.html', contacts=data)
+    return render_template('contacts.html', contacts=data)
 
 @app.route('/add_contact', methods=['POST'])
 def add_contact():
@@ -38,7 +103,7 @@ def add_contact():
 
         flash('Contact Added')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('contacts'))
 
 @app.route('/edit/<string:id>')
 def get_contact(id):

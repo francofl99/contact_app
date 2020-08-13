@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+
+<div class="col-md-4 offset-md-4">
+    <div class="card card-body">
+        <form action="/update_note/{{ note.0 }}" method="POST">
+          <div class="form-group">
+            <input type="text" name="title" value="{{ note.1 }}" class="form-control">
+          </div>
+          <div class="form-group">
+            <input type="text" name="content" value="{{ note.2 }}" class="form-control form-control-lg">
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Color
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="padding: 1rem;">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="color" id="color-yellow" value="warning" checked>
+                <label class="form-check-label" for="color-yellow">
+                  Yellow
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="color" id="color-green" value="success" checked>
+                <label class="form-check-label" for="color-green">
+                  Green
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="color" id="color-red" value="danger" checked>
+                <label class="form-check-label" for="color-red">
+                  Red
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="color" id="color-blue" value="info" checked>
+                <label class="form-check-label" for="color-blue">
+                  Blue
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group pt-3">
+            <button type="submit" class="btn btn-primary btn-block">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+</div>
+
+{% endblock %}
